@@ -1,0 +1,31 @@
+<div class = "container">
+    <h2>添加新任务</h2>
+    <form action = "/jobinfo/add" method="POST">
+        <label for="name">任务名称:</label>
+        <br>
+        <input type ="text" id="name" name="Name"/>
+        <br>
+
+        <label for="group">任务分组:</label>
+        <br>
+        <input type ="text" id="group" name="Group"/>
+        <br>
+
+        <label for="cron">Cron:</label>
+        <br>
+        <input type ="text" id="cron" name="Cron"/>
+        <br>
+
+        <label for="urls">目标服务器URLS:</label>
+        <br>
+        <input type ="text" id="urls" name="Urls"/>
+        <br>
+
+        <label for="params">参数:</label>
+        <br>
+        <textarea rows="5" id="params" name="Params"></textarea>
+        <br>
+
+        <button id="submitBtn" type="submit">添加新任务</button>
+    </form>
+</div>

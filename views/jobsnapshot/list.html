@@ -1,0 +1,43 @@
+<div class="container">
+    <h2>任务执行列表</h2>
+
+    <form action="/jobsnapshot/list" method="post">
+        <input type="text" name="Name" value="{{.name}}"placeholder="任务名称">
+        <input type="text" name="Group" value="{{.group}}" placeholder="任务分组">
+        <button type="submit" >搜索</button>
+    </form>
+
+    <table class="panel-body">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>JobInfoId</th>
+                <th>Name</th>
+                <th>Group</th>
+                <th>Status</th>
+                <th>Url</th>
+                <th>Params</th>
+                <th>CreateTime</th>
+                <th>ModifyTime</th>
+                <th>TimeConsume</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {{range $index, $jobsnapshot := .jobsnapshots}}
+            <tr>
+                <td>{{$jobsnapshot.Id}}</td>
+                <td>{{$jobsnapshot.JobId}}</td>
+                <td>{{$jobsnapshot.Name}}</td>
+                <td>{{$jobsnapshot.Group}}</td>
+                <td>{{$jobsnapshot.Status}}</td>
+                <td>{{$jobsnapshot.Url}}</td>
+                <td>{{$jobsnapshot.Params}}</td>
+                <td>{{$jobsnapshot.CreateTime}}</td>
+                <td>{{$jobsnapshot.ModifyTime}}</td>
+                <td>{{$jobsnapshot.TimeConsume}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>

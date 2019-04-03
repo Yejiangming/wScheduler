@@ -1,0 +1,41 @@
+<div class = "container">
+    <h2>修改任务信息</h2>
+    <form action = "/jobinfo/edit" method="POST">
+        <label for="id">任务Id:</label>
+        <br>
+        <input type ="text" id="id" name="Id" value={{.job.Id}} readonly = "true"/>
+        <br>
+
+        <label for="name">任务名称:</label>
+        <br>
+        <input type ="text" id="name" name="Name" value="{{.job.Name}}"/>
+        <br>
+
+        <label for="group">任务分组:</label>
+        <br>
+        <input type ="text" id="group" name="Group" value="{{.job.Group}}"/>
+        <br>
+
+        <label for="cron">Cron:</label>
+        <br>
+        <input type ="text" id="cron" name="Cron" value="{{.job.Cron}}"/>
+        <br>
+
+        <label for="urls">目标服务器URLS:</label>
+        <br>
+        <input type ="text" id="urls" name="Urls" value="{{.job.Urls}}"/>
+        <br>
+
+        <label for="params">参数:</label>
+        <br>
+        <textarea rows="5" id="params" name="Params" >{{.job.Params}}</textarea>
+        <br>
+
+        <label for="isActive">是否已经激活:</label>
+        <br>
+        <input type ="text" id="isActive" name="IsActive" value={{.job.IsActive}} readonly = "true"/>
+        <br>
+
+        <button id="submitBtn" type="submit">修改任务</button>
+    </form>
+</div>

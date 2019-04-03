@@ -1,0 +1,49 @@
+<div class="container">
+    <h2>任务列表</h2>
+
+    <form action="/jobinfo/list" method="post">
+        <input type="text" name="Name" value="{{.name}}"placeholder="任务名称">
+        <input type="text" name="Group" value="{{.group}}" placeholder="任务分组">
+        <button type="submit" >搜索</button>
+    </form>
+
+    <table class="panel-body">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Group</th>
+                <th>Cron</th>
+                <th>Urls</th>
+                <th>Params</th>
+                <th>Active</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range $index, $job := .jobs}}
+            <tr>
+                <td>{{$job.Id}}</td>
+                <td>{{$job.Name}}</td>
+                <td>{{$job.Group}}</td>
+                <td>{{$job.Cron}}</td>
+                <td>{{$job.Urls}}</td>
+                <td>{{$job.Params}}</td>
+
+                <td>
+                {{if eq 0 $job.IsActive}}
+                <a href="/jobinfo/activate?Id={{$job.Id}}" class="button">Activate</a>
+                {{else}}
+                <a href="/jobinfo/inactivate?Id={{$job.Id}}" class="button">InActivate</a>
+                {{end}}
+                </td>
+
+                <td><a href="/jobinfo/edit/?Id={{$job.Id}}" class="button">Edit</a></td>
+
+                <td><a href="/jobinfo/delete?Id={{$job.Id}}" class="button">Delete</a></td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
