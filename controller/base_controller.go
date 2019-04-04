@@ -17,25 +17,17 @@ func (this *BaseController) Prepare() {
 	this.LayoutSections = m
 	this.Layout = "layout/layout.html"
 
-	sess := this.StartSession()
-	username := sess.Get("username")
+	username := this.GetSession("username")
 	userinfo := new(entity.UserInfo)
-	uri := this.Ctx.Request.RequestURI
 	if username == nil {
 		userinfo.Username = "未登陆"
-		this.Data["userinfo"] = userinfo
-		if uri == "/register" {
-			return
-		}
-		if uri == "/login" {
-			return
-		}
-		if uri == "/logout" {
-			return
-		}
-		this.Redirect("/login", 302)
 	} else {
 		userinfo.Username = username.(string)
-		this.Data["userinfo"] = userinfo
+	}
+	this.Data["userinfo"] = userinfo
+
+	uri := this.Ctx.Request.RequestURI
+	if username == nil && uri != "/register" && uri != "/login" && uri != "/logout" {
+		this.Redirect("/login", 302)
 	}
 }
