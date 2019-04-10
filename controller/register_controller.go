@@ -9,6 +9,7 @@ import (
 	"wScheduler/common"
 	"wScheduler/entity"
 
+	"github.com/astaxie/beego/config"
 	"github.com/go-redis/redis"
 )
 
@@ -86,8 +87,14 @@ func (this *RegisterController) Register() {
 		return
 	}
 
+	conf, err := config.NewConfig("ini", "./conf/app.conf")
+	if err != nil {
+		res.Message = err.Error()
+		return
+	}
+	server := conf.String(conf.String("runmode") + "::httpaddr")
 	msg := "<html>\r\n" +
-		"<a href=" + "localhost:8888/mailbox/active?Mailbox=" + mailbox + "&Key=" + key + ">key</a>\r\n" +
+		"<a href=" + server + ":8888/mailbox/active?Mailbox=" + mailbox + "&Key=" + key + ">key</a>\r\n" +
 		"</html>\r\n"
 	err = common.SendMail(mailbox, msg, "激活邮箱")
 	if err != nil {
