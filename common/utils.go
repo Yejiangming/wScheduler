@@ -1,9 +1,9 @@
 package common
 
 import (
+	"crypto/tls"
 	"log"
 	"net/smtp"
-	"strings"
 )
 
 type Result struct {
@@ -18,19 +18,65 @@ func PanicIf(err error) {
 }
 
 // 由13269827772@163.com发送
-// 支持html 支持向多个邮箱发送
-func SendMail(to []string, msg string, subject string) error {
-	username := "13269827772@163.com"
+// 支持html 单个发送
+func SendMail(to string, body string, subject string) error {
+	from := "13269827772@163.com"
 	password := "a13115681225"
 	host := "smtp.163.com"
-	auth := smtp.PlainAuth("", username, password, host)
+	port := "465"
+	auth := smtp.PlainAuth("", from, password, host)
 	nickname := "wScheduler"
 	contentType := "Content-Type: text/html; charset=UTF-8"
-	body := []byte("To: " + strings.Join(to, ",") + "\r\n" +
-		"From: " + nickname + "<" + username + ">\r\n" +
+	msg := []byte("To: " + to + "\r\n" +
+		"From: " + nickname + "<" + from + ">\r\n" +
 		"Subject: " + subject + "\r\n" +
 		contentType + "\r\n\r\n" +
-		msg)
-	err := smtp.SendMail("smtp.163.com:25", auth, username, to, body)
-	return err
+		body)
+
+	// TLS config
+	tlsconfig := &tls.Config{
+		InsecureSkipVerify: true,
+		ServerName:         host,
+	}
+
+	conn, err := tls.Dial("tcp", host+":"+port, tlsconfig)
+	if err != nil {
+		return err
+	}
+
+	c, err := smtp.NewClient(conn, host)
+	if err != nil {
+		return err
+	}
+
+	if err = c.Auth(auth); err != nil {
+		return err
+	}
+
+	if err = c.Mail(from); err != nil {
+		return err
+	}
+
+	if err = c.Rcpt(to); err != nil {
+		return err
+	}
+
+	w, err := c.Data()
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write(msg)
+	if err != nil {
+		return err
+	}
+
+	err = w.Close()
+	if err != nil {
+		return err
+	}
+
+	c.Quit()
+
+	return nil
 }

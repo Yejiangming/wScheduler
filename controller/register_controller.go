@@ -3,6 +3,7 @@ package controller
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"math/rand"
 	"time"
 	"wScheduler/common"
@@ -88,9 +89,10 @@ func (this *RegisterController) Register() {
 	msg := "<html>\r\n" +
 		"<a href=" + "localhost:8888/mailbox/active?Mailbox=" + mailbox + "&Key=" + key + ">key</a>\r\n" +
 		"</html>\r\n"
-	err = common.SendMail([]string{mailbox}, msg, "激活邮箱")
+	err = common.SendMail(mailbox, msg, "激活邮箱")
 	if err != nil {
 		res.Message += " 发送邮件失败"
+		fmt.Println(err)
 		return
 	}
 
