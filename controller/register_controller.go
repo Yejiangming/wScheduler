@@ -40,7 +40,7 @@ func (this *RegisterController) Register() {
 
 	userInfo := new(entity.UserInfo)
 	userInfo.Username = username
-	userInfo.GetUserInfo()
+	userInfo.GetUserInfoByUsername()
 	if userInfo.Id != 0 {
 		res.Message = " 用户名已经被注册"
 		return
@@ -50,7 +50,7 @@ func (this *RegisterController) Register() {
 	userInfo.Username = ""
 	userInfo.Password = ""
 	userInfo.Mailbox = mailbox
-	userInfo.GetUserInfo()
+	userInfo.GetUserInfoByMailbox()
 	if userInfo.Id != 0 {
 		res.Message = " 邮箱已被注册"
 		return

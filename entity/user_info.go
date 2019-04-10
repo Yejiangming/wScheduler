@@ -11,9 +11,15 @@ type UserInfo struct {
 	Mailbox  string
 }
 
-func (this *UserInfo) GetUserInfo() error {
+func (this *UserInfo) GetUserInfoByUsername() error {
 	o := orm.NewOrm()
 	err := o.Read(this, "username")
+	return err
+}
+
+func (this *UserInfo) GetUserInfoByMailbox() error {
+	o := orm.NewOrm()
+	err := o.Read(this, "mailbox")
 	return err
 }
 

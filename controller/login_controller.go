@@ -18,7 +18,7 @@ func (this *RegisterController) Login() {
 	password := this.GetString("Password")
 	userInfo := new(entity.UserInfo)
 	userInfo.Username = username
-	userInfo.GetUserInfo()
+	userInfo.GetUserInfoByUsername()
 	if userInfo.Password == password {
 		this.SetSession("username", userInfo.Username)
 		this.Redirect("/", 302)

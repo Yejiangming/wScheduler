@@ -61,4 +61,5 @@ func (this *MailboxController) Active() {
 		return
 	}
 	res.Message += " 注册成功"
+	res.Success = true
 }
