@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"strings"
 	"wScheduler/entity"
 
 	"github.com/astaxie/beego"
@@ -27,7 +28,19 @@ func (this *BaseController) Prepare() {
 	this.Data["userinfo"] = userinfo
 
 	uri := this.Ctx.Request.RequestURI
-	if username == nil && uri != "/register" && uri != "/login" && uri != "/logout" {
+	if username == nil {
+		if uri == "/register" {
+			return
+		}
+		if uri == "/login" {
+			return
+		}
+		if uri == "/logout" {
+			return
+		}
+		if strings.Contains(uri, "mailbox/active") {
+			return
+		}
 		this.Redirect("/login", 302)
 	}
 }

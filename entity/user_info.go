@@ -8,6 +8,7 @@ type UserInfo struct {
 	Id       int
 	Username string
 	Password string
+	Mailbox  string
 }
 
 func (this *UserInfo) GetUserInfo() error {

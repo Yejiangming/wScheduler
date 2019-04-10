@@ -32,6 +32,8 @@ create table `user_info`(
 	`id` int(10) unsigned not null auto_increment,
 	`username` varchar(100) not null,
 	`password` varchar(100) not null,
+	`mailbox` varchar(100) not null,
 	primary key(`id`),
-	key(`username`)
+	key(`username`),
+	key(`mailbox`)
 )engine=InnoDB default charset=utf8;

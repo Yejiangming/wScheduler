@@ -24,16 +24,6 @@ func main() {
 
 	beego.BConfig.WebConfig.Session.SessionOn = true
 
-	// var FilterUser = func(ctx *context.Context) {
-	// 	fmt.Println("filterUser", ctx.Request.RequestURI)
-	// 	_, ok := ctx.Input.Session("username").(string)
-	// 	if !ok && ctx.Request.RequestURI != "/login" {
-	// 		fmt.Println("redirectTo/login")
-	// 		ctx.Redirect(302, "/login")
-	// 	}
-	// }
-	// beego.InsertFilter("*", beego.BeforeRouter, FilterUser)
-
 	beego.Router("/", &controller.IndexController{})
 	beego.Router("/jobinfo/add", &controller.JobInfoController{}, "get:ToAdd")
 	beego.Router("/jobinfo/add", &controller.JobInfoController{}, "post:Add")
@@ -49,7 +39,7 @@ func main() {
 	beego.Router("/login", &controller.RegisterController{}, "post:Login")
 	beego.Router("/logout", &controller.LogoutController{}, "*:Logout")
 	beego.Router("/jobsnapshot/list", &controller.JobSnapshotController{}, "*:List")
-
+	beego.Router("/mailbox/active", &controller.MailboxController{}, "*:Active")
 	jm := job.NewJobManager()
 	jm.PushAllJobInfo()
 	beego.Run()
