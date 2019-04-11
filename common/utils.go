@@ -19,6 +19,9 @@ func PanicIf(err error) {
 
 // 由13269827772@163.com发送
 // 支持html 单个发送
+// 阿里云封禁TCP25端口出方向的访问流量，
+// 无法在阿里云服务器上通过TCP25端口连接SMTP服务器对外发送邮件
+// 改用465端口
 func SendMail(to string, body string, subject string) error {
 	from := "13269827772@163.com"
 	password := "a13115681225"
