@@ -81,7 +81,7 @@ func (this *RegisterController) Register() {
 		res.Message = err.Error()
 		return
 	}
-	err = client.Expire("mail:"+mailbox, 2*time.Minute).Err()
+	err = client.Expire("mail:"+mailbox, 30*time.Minute).Err()
 	if err != nil {
 		res.Message = err.Error()
 		return
