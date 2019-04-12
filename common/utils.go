@@ -4,6 +4,8 @@ import (
 	"crypto/tls"
 	"log"
 	"net/smtp"
+
+	"github.com/astaxie/beego"
 )
 
 type Result struct {
@@ -23,8 +25,8 @@ func PanicIf(err error) {
 // 无法在阿里云服务器上通过TCP25端口连接SMTP服务器对外发送邮件
 // 改用465端口
 func SendMail(to string, body string, subject string) error {
-	from := "13269827772@163.com"
-	password := "a13115681225"
+	from := beego.AppConfig.String("mailbox")
+	password := beego.AppConfig.String("mailboxPassword")
 	host := "smtp.163.com"
 	port := "465"
 	auth := smtp.PlainAuth("", from, password, host)

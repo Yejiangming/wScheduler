@@ -1,23 +1,19 @@
 package main
 
 import (
-	"wScheduler/common"
 	"wScheduler/controller"
 	"wScheduler/entity"
 	"wScheduler/job"
 
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/config"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	conf, err := config.NewConfig("ini", "./conf/app.conf")
-	common.PanicIf(err)
-	dbUser := conf.String("dbUser")
-	dbPassword := conf.String("dbPassword")
-	dbName := conf.String("dbName")
+	dbUser := beego.AppConfig.String("dbUser")
+	dbPassword := beego.AppConfig.String("dbPassword")
+	dbName := beego.AppConfig.String("dbName")
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	orm.RegisterDataBase("default", "mysql", dbUser+":"+dbPassword+"@/"+dbName+"?charset=utf8")
 	orm.RegisterModel(&entity.JobInfo{}, &entity.JobSnapshot{}, &entity.UserInfo{})
