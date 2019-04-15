@@ -56,17 +56,21 @@ func (this *JobManager) PushAllJobInfo() {
 	}
 }
 
+// 远程被执行函数返回common.res类型的结果
 func (this *JobManager) Execute(JobId int) {
-	jobInfo := new(entity.JobInfo)
-	jobInfo.Id = JobId
+	jobInfo := &entity.JobInfo{
+		Id: JobId,
+	}
 	jobInfo.GetJobInfo()
 
 	// 参数以json格式传送
 	var parameter map[string]interface{}
 	json.Unmarshal([]byte(jobInfo.Params), &parameter)
-	log.Println(parameter)
 	content, err := json.Marshal(parameter)
-	common.PanicIf(err)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	res := new(common.Result)
 
@@ -86,27 +90,19 @@ func (this *JobManager) Execute(JobId int) {
 		jobsnap.SaveJobSnapshot()
 		resp, err := http.Post(url, "application/json;charset=utf-8", bytes.NewBuffer(content))
 		if err != nil {
-			jobsnap.Status = CONNECT_ERROR
+			jobsnap.Status = err.Error()
 			jobsnap.ModifyTime = time.Now()
+			jobsnap.TimeConsume = jobsnap.ModifyTime.Sub(jobsnap.CreateTime).String()
 			jobsnap.UpdateSnapshot()
 			continue
 		}
 		body, _ := ioutil.ReadAll(resp.Body)
 		json.Unmarshal(body, res)
-		log.Println(res)
-		if res.Success {
-			jobsnap.Status = SUCCESS
-			jobsnap.ModifyTime = time.Now()
-			// jobsnap.TimeConsume = int(jobsnap.ModifyTime.Sub(jobsnap.CreateTime)) / 1e9
-			jobsnap.TimeConsume = jobsnap.ModifyTime.Sub(jobsnap.CreateTime).String()
 
-			jobsnap.UpdateSnapshot()
-		} else {
-			jobsnap.Status = FAIL
-			jobsnap.ModifyTime = time.Now()
-			jobsnap.TimeConsume = jobsnap.ModifyTime.Sub(jobsnap.CreateTime).String()
-			jobsnap.UpdateSnapshot()
-		}
+		jobsnap.Status = res.Message
+		jobsnap.ModifyTime = time.Now()
+		jobsnap.TimeConsume = jobsnap.ModifyTime.Sub(jobsnap.CreateTime).String()
+		jobsnap.UpdateSnapshot()
 	}
 }
 
