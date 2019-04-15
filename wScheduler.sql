@@ -9,7 +9,6 @@ create table `job_info`(
 	`is_active` int(10) not null,
 	`create_time` datetime not null,
 	`modify_time` datetime not null,
-	`user_name` varchar(100) not null,
     primary key(`id`)
 )engine=InnoDB default charset=utf8;
 
@@ -25,7 +24,6 @@ create table `job_snapshot`(
 	`create_time` datetime not null,
 	`modify_time` datetime not null,
 	`time_consume` varchar(100) not null,
-	`user_name` varchar(100) not null,
 	primary key(`id`)
 )engine=InnoDB default charset=utf8;
 
