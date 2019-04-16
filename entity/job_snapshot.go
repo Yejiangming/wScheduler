@@ -17,6 +17,7 @@ type JobSnapshot struct {
 	CreateTime  time.Time
 	ModifyTime  time.Time
 	TimeConsume string
+	UserName    string
 }
 
 func (this *JobSnapshot) SaveJobSnapshot() error {
@@ -39,6 +40,7 @@ func (this *JobSnapshot) GetList() ([]*JobSnapshot, error) {
 	if this.Group != "" {
 		qs = qs.Filter("group", this.Group)
 	}
+	qs = qs.Filter("user_name", this.UserName)
 	_, err := qs.All(&jobSnapshots)
 	return jobSnapshots, err
 }

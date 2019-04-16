@@ -94,7 +94,7 @@ func (this *RegisterController) Register() {
 	}
 	servername := conf.String(conf.String("runmode") + "::servername")
 	msg := "<html>\r\n" +
-		"<a href=" + servername + ":8888/mailbox/active?Mailbox=" + mailbox + "&Key=" + key + ">key</a>\r\n" +
+		servername + ":8888/mailbox/active?Mailbox=" + mailbox + "&Key=" + key + "\r\n" +
 		"</html>\r\n"
 	err = common.SendMail(mailbox, msg, "激活邮箱")
 	if err != nil {

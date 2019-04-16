@@ -16,6 +16,7 @@ type JobInfo struct {
 	IsActive   int
 	CreateTime time.Time
 	ModifyTime time.Time
+	UserName   string
 }
 
 func (this *JobInfo) SaveJobInfo() error {
@@ -38,6 +39,7 @@ func (this *JobInfo) GetList() ([]*JobInfo, error) {
 	if this.Group != "" {
 		qs = qs.Filter("group", this.Group)
 	}
+	qs = qs.Filter("user_name", this.UserName)
 	_, err := qs.All(&jobs)
 	return jobs, err
 }

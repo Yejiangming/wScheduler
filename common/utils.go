@@ -19,6 +19,13 @@ func PanicIf(err error) {
 	}
 }
 
+func CheckUser(authUser string, nowUser string) bool {
+	if authUser == nowUser {
+		return true
+	}
+	return false
+}
+
 // 由13269827772@163.com发送
 // 支持html 单个发送
 // 阿里云封禁TCP25端口出方向的访问流量，

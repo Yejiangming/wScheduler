@@ -17,6 +17,7 @@ func (this *JobInfoController) ToAdd() {
 
 // 最初加入的job都是未激活的
 // 直接存入数据库中
+// 存入用户名
 func (this *JobInfoController) Add() {
 	res := new(common.Result)
 	defer func() {
@@ -35,6 +36,12 @@ func (this *JobInfoController) Add() {
 		return
 	}
 
+	username, ok := this.GetSession("username").(string)
+	if !ok {
+		res.Message = "获取用户信息失败"
+		return
+	}
+
 	jobInfo := &entity.JobInfo{
 		Name:       name,
 		Group:      group,
@@ -42,6 +49,7 @@ func (this *JobInfoController) Add() {
 		Urls:       urls,
 		Params:     params,
 		CreateTime: time.Now(),
+		UserName:   username,
 	}
 	jobInfo.ModifyTime = jobInfo.CreateTime
 
@@ -58,7 +66,15 @@ func (this *JobInfoController) Add() {
 func (this *JobInfoController) List() {
 	name := this.GetString("Name")
 	group := this.GetString("Group")
-	jobInfo := &entity.JobInfo{Name: name, Group: group}
+	username, ok := this.GetSession("username").(string)
+	if !ok {
+		res := new(common.Result)
+		res.Message = "获取用户信息失败"
+		this.Data["res"] = res
+		this.TplName = "jobinfo/res.html"
+		return
+	}
+	jobInfo := &entity.JobInfo{Name: name, Group: group, UserName: username}
 	jobs, err := jobInfo.GetList()
 	if err != nil {
 		res := new(common.Result)
@@ -81,9 +97,24 @@ func (this *JobInfoController) Delete() {
 		this.TplName = "jobinfo/res.html"
 	}()
 
+	username, ok := this.GetSession("username").(string)
+	if !ok {
+		res.Message = "获取用户信息失败"
+		return
+	}
+
 	id, err := this.GetInt("Id")
 	if err != nil {
 		res.Message = err.Error()
+		return
+	}
+
+	jobInfo := &entity.JobInfo{
+		Id: id,
+	}
+	jobInfo.GetJobInfo()
+	if !common.CheckUser(jobInfo.UserName, username) {
+		res.Message = "权限不足"
 		return
 	}
 
@@ -99,9 +130,6 @@ func (this *JobInfoController) Delete() {
 		res.Message = "尚未激活"
 	}
 
-	jobInfo := &entity.JobInfo{
-		Id: id,
-	}
 	err = jobInfo.DeleteJobInfo()
 	if err != nil {
 		res.Message += " 从数据库删除失败"
@@ -119,6 +147,12 @@ func (this *JobInfoController) Activate() {
 		this.TplName = "jobinfo/res.html"
 	}()
 
+	username, ok := this.GetSession("username").(string)
+	if !ok {
+		res.Message = "获取用户信息失败"
+		return
+	}
+
 	id, err := this.GetInt("Id")
 	if err != nil {
 		res.Message = err.Error()
@@ -128,6 +162,12 @@ func (this *JobInfoController) Activate() {
 		Id: id,
 	}
 	jobInfo.GetJobInfo()
+
+	if !common.CheckUser(jobInfo.UserName, username) {
+		res.Message = "权限不足"
+		return
+	}
+
 	if jobInfo.IsActive == 1 {
 		res.Message = "已被激活"
 		return
@@ -158,6 +198,13 @@ func (this *JobInfoController) InActivate() {
 		this.Data["res"] = res
 		this.TplName = "jobinfo/res.html"
 	}()
+
+	username, ok := this.GetSession("username").(string)
+	if !ok {
+		res.Message = "获取用户信息失败"
+		return
+	}
+
 	id, err := this.GetInt("Id")
 	if err != nil {
 		res.Message = err.Error()
@@ -167,6 +214,12 @@ func (this *JobInfoController) InActivate() {
 		Id: id,
 	}
 	jobInfo.GetJobInfo()
+
+	if !common.CheckUser(jobInfo.UserName, username) {
+		res.Message = "权限不足"
+		return
+	}
+
 	if jobInfo.IsActive == 0 {
 		res.Message = "尚未被激活"
 		return
@@ -191,6 +244,15 @@ func (this *JobInfoController) InActivate() {
 
 func (this *JobInfoController) ToEdit() {
 	res := new(common.Result)
+
+	username, ok := this.GetSession("username").(string)
+	if !ok {
+		res.Message = "获取用户信息失败"
+		this.Data["res"] = res
+		this.TplName = "jobinfo/res.html"
+		return
+	}
+
 	id, err := this.GetInt("Id")
 	if err != nil {
 		res.Message = err.Error()
@@ -202,12 +264,15 @@ func (this *JobInfoController) ToEdit() {
 	jobInfo := &entity.JobInfo{
 		Id: id,
 	}
-	if err := jobInfo.GetJobInfo(); err != nil {
-		res.Message = err.Error()
+	jobInfo.GetJobInfo()
+
+	if !common.CheckUser(jobInfo.UserName, username) {
+		res.Message = "权限不足"
 		this.Data["res"] = res
 		this.TplName = "jobinfo/res.html"
 		return
 	}
+
 	this.Data["job"] = jobInfo
 	this.TplName = "jobinfo/edit.html"
 }
@@ -220,11 +285,31 @@ func (this *JobInfoController) Edit() {
 		this.TplName = "jobinfo/res.html"
 	}()
 
+	username, ok := this.GetSession("username").(string)
+	if !ok {
+		res.Message = "获取用户信息失败"
+		this.Data["res"] = res
+		this.TplName = "jobinfo/res.html"
+		return
+	}
+
 	id, err := this.GetInt("Id")
 	if err != nil {
 		res.Message = err.Error()
 		return
 	}
+
+	tmpJobInfo := &entity.JobInfo{
+		Id: id,
+	}
+	tmpJobInfo.GetJobInfo()
+	if !common.CheckUser(tmpJobInfo.UserName, username) {
+		res.Message = "权限不足"
+		this.Data["res"] = res
+		this.TplName = "jobinfo/res.html"
+		return
+	}
+
 	name := this.GetString("Name")
 	group := this.GetString("Group")
 	corn := this.GetString("Cron")

@@ -79,7 +79,6 @@ func (qz *Quartz) AddJob(job *Job) error {
 	qz.lk.Lock()
 	defer qz.lk.Unlock()
 	if qz.ExistsJob(job.Id) == -1 {
-		//log.Println(job.Expression)
 		schedule, err := Parse(job.Expression)
 		if err != nil {
 			return err
@@ -178,7 +177,6 @@ func (qz *Quartz) run() {
 		} else {
 			effective = qz.jobPool[0].Next
 		}
-
 		select {
 		case now = <-time.After(effective.Sub(now)):
 			for _, v := range qz.jobPool {

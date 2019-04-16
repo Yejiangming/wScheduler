@@ -86,6 +86,7 @@ func (this *JobManager) Execute(JobId int) {
 			Params:     jobInfo.Params,
 			CreateTime: now,
 			ModifyTime: now,
+			UserName:   jobInfo.UserName,
 		}
 		jobsnap.SaveJobSnapshot()
 		resp, err := http.Post(url, "application/json;charset=utf-8", bytes.NewBuffer(content))
